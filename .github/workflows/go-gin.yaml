@@ -21,7 +21,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: go-gin
+  IMAGE_NAME: ${{ github.repository_owner }}/go-gin
 
 jobs:
   build-and-push:
