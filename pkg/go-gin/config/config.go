@@ -2,6 +2,7 @@ package config
 
 import (
 	"strings"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -24,7 +25,10 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Port int
+	Port         int
+	ReadTimeout  time.Duration
+	WriteTimeout time.Duration
+	IdleTimeout  time.Duration
 }
 
 type MetricsConfig struct {
@@ -32,13 +36,20 @@ type MetricsConfig struct {
 	Password string
 }
 
-var Cfg *Config
-
 const (
-	DefaultServerPort = 8080
+	DefaultServerPort          = 8080
+	DefaultReadTimeoutSeconds  = 15
+	DefaultWriteTimeoutSeconds = 20
+	DefaultIdleTimeoutSeconds  = 60
 )
 
-func InitConfig(opts ...Option) (*Config,error) {
+var (
+	DefaultReadTimeout  = time.Duration(DefaultReadTimeoutSeconds) * time.Second
+	DefaultWriteTimeout = time.Duration(DefaultWriteTimeoutSeconds) * time.Second
+	DefaultIdleTimeout  = time.Duration(DefaultIdleTimeoutSeconds) * time.Second
+)
+
+func Init(opts ...Option) (*Config, error) {
 
 	options := &Options{}
 	for _, opt := range opts {
@@ -52,15 +63,41 @@ func InitConfig(opts ...Option) (*Config,error) {
 
 	viper.AutomaticEnv()
 
-	Cfg = &Config{}
-	Cfg.Server.Port = DefaultServerPort
-
+	cfg := defaultConfig()
 	if port := viper.GetInt("SERVER_PORT"); port >= 1 && port <= 65535 {
-		Cfg.Server.Port = port
+		cfg.Server.Port = port
+	}
+	if t := viper.GetDuration("SERVER_READ_TIMEOUT"); t > 0 {
+		cfg.Server.ReadTimeout = t
+	}
+	if t := viper.GetDuration("SERVER_WRITE_TIMEOUT"); t > 0 {
+		cfg.Server.WriteTimeout = t
+	}
+	if t := viper.GetDuration("SERVER_IDLE_TIMEOUT"); t > 0 {
+		cfg.Server.IdleTimeout = t
 	}
 
-	Cfg.Metrics.Username = viper.GetString("METRICS_USERNAME")
-	Cfg.Metrics.Password = viper.GetString("METRICS_PASSWORD")
+	if u := viper.GetString("METRICS_USERNAME"); u != "" {
+		cfg.Metrics.Username = u
+	}
+	if p := viper.GetString("METRICS_PASSWORD"); p != "" {
+		cfg.Metrics.Password = p
+	}
 
-	return Cfg, nil
+	return cfg, nil
+}
+
+func defaultConfig() *Config {
+	return &Config{
+		Server: ServerConfig{
+			Port:         DefaultServerPort,
+			ReadTimeout:  DefaultReadTimeout,
+			WriteTimeout: DefaultWriteTimeout,
+			IdleTimeout:  DefaultIdleTimeout,
+		},
+		Metrics: MetricsConfig{
+			Username: "",
+			Password: "",
+		},
+	}
 }

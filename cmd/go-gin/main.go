@@ -12,7 +12,7 @@ import (
 
 func main() {
 
-	conf, err := config.InitConfig()
+	conf, err := config.Init()
 	if err != nil {
 		log.Printf("Failed to initialize configuration: %v", err)
 		os.Exit(100)
@@ -25,7 +25,7 @@ func main() {
 	server := server.NewServer(metrics)
 
 	go func() {
-		if err := server.Run(conf.Server.Port); err != nil{
+		if err := server.Run(conf.Server); err != nil{
 			log.Printf("Server start failed: %v", err)
 			os.Exit(101)
 		}

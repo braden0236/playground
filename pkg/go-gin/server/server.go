@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/braden0236/playground/pkg/go-gin/config"
 	"github.com/braden0236/playground/pkg/go-gin/metric"
 
 	"github.com/gin-gonic/gin"
@@ -54,12 +55,15 @@ func NewServer(m *metric.Metrics) *Server {
 	}
 }
 
-func (s *Server) Run(port int) error {
+func (s *Server) Run(conf config.ServerConfig) error {
 	s.http = &http.Server{
-		Addr:    ":" + strconv.Itoa(port),
-		Handler: s.engine,
+		Addr:         ":" + strconv.Itoa(conf.Port),
+		Handler:      s.engine,
+		ReadTimeout:  conf.ReadTimeout,
+		WriteTimeout: conf.WriteTimeout,
+		IdleTimeout:  conf.IdleTimeout,
 	}
-	log.Printf("Starting server on port %d", port)
+	log.Printf("Starting server on port %d", conf.Port)
 
 	err := s.http.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
