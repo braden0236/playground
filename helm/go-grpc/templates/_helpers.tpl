@@ -71,3 +71,16 @@ Allow the release namespace to be overridden for multi-namespace deployments in 
 {{- .Release.Namespace }}
 {{- end }}
 {{- end }}
+
+{{/*
+Return the appropriate apiVersion for podDisruptionBudget.
+*/}}
+{{- define "go-grpc.podDisruptionBudget.apiVersion" -}}
+{{- if $.Values.podDisruptionBudget.apiVersion }}
+{{- print $.Values.podDisruptionBudget.apiVersion }}
+{{- else if $.Capabilities.APIVersions.Has "policy/v1/PodDisruptionBudget" }}
+{{- print "policy/v1" }}
+{{- else }}
+{{- print "policy/v1beta1" }}
+{{- end }}
+{{- end }}
