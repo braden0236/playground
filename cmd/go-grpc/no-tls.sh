@@ -1,0 +1,8 @@
+
+export SERVER_ADDRESS=":50051"
+export SERVER_METRICS_ENABLED="true"
+export SERVER_METRICS_ADDRESS=":9092"
+
+export CLIENT_ADDRESS="dns:///localhost:50051"
+export CLIENT_KEEP_ALIVE="7s"
+export CLIENT_ENABLE_ROUND_ROBIN="true"

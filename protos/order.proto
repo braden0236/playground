@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package order;
+
+option go_package = "github.com/braden0236/playground/pkg/order;orderpb";
+
+message OrderRequest {
+  string order_id = 1;
+}
+
+message OrderResponse {
+  string order_id = 1;
+  string status = 2;
+  double amount = 3;
+  string description =4;
+}
+
+message CreateOrderRequest {
+  string order_id = 1;
+  double amount = 2;
+}
+
+message CreateOrderResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message UpdateOrderRequest {
+  string order_id = 1;
+  string status = 2;
+  double amount = 3;
+}
+
+message UpdateOrderResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message DeleteOrderRequest {
+  string order_id = 1;
+}
+
+message DeleteOrderResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ListOrdersRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message ListOrdersResponse {
+  repeated OrderResponse orders = 1;
+  int32 total = 2;
+}
+
+service OrderService {
+  rpc GetOrder(OrderRequest) returns (OrderResponse);
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+  rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse);
+  rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse);
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
+}
