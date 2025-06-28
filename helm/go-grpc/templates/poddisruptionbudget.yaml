@@ -1,11 +1,11 @@
 {{- if .Values.podDisruptionBudget }}
-apiVersion: {{ include "go-gin.podDisruptionBudget.apiVersion" . }}
+apiVersion: {{ include "go-grpc.podDisruptionBudget.apiVersion" . }}
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "go-gin.fullname" . }}
-  namespace: {{ include "go-gin.namespace" . }}
+  name: {{ include "go-grpc.fullname" . }}
+  namespace: {{ include "go-grpc.namespace" . }}
   labels:
-    {{- include "go-gin.labels" . | nindent 4 }}
+    {{- include "go-grpc.labels" . | nindent 4 }}
     {{- with .Values.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -18,7 +18,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "go-gin.selectorLabels" . | nindent 6 }}
+      {{- include "go-grpc.selectorLabels" . | nindent 6 }}
   {{- with .Values.podDisruptionBudget.unhealthyPodEvictionPolicy }}
   unhealthyPodEvictionPolicy: {{ . }}
   {{- end }}
