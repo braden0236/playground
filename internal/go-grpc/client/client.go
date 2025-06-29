@@ -10,6 +10,7 @@ import (
 	"github.com/braden0236/playground/internal/go-grpc/config"
 	"github.com/braden0236/playground/internal/go-grpc/tls"
 	orderpb "github.com/braden0236/playground/pkg/go-grpc/order"
+	_ "github.com/braden0236/playground/internal/go-grpc/dns"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
